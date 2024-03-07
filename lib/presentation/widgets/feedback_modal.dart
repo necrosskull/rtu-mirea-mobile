@@ -24,6 +24,7 @@ class FeedbackBottomModalSheet extends StatefulWidget {
     VoidCallback? onConfirm,
   }) {
     showModalBottomSheet(
+      showDragHandle: true,
       isDismissible: true,
       isScrollControlled: true,
       backgroundColor: AppTheme.colors.background02,
@@ -76,20 +77,6 @@ class _FeedbackBottomModalSheetState extends State<FeedbackBottomModalSheet> {
     final email = _emailController.text;
     final text = _textController.text;
 
-    if (email == null) {
-      setState(() {
-        _emailErrorText = 'Введите email';
-      });
-      return;
-    }
-
-    if (text == null) {
-      setState(() {
-        _textErrorText = 'Введите текст';
-      });
-      return;
-    }
-
     if (!_reEmail.hasMatch(email)) {
       setState(() {
         _emailErrorText = 'Некорректный email';
@@ -109,7 +96,8 @@ class _FeedbackBottomModalSheetState extends State<FeedbackBottomModalSheet> {
       _textErrorText = null;
     });
 
-    final SentryId sentryId = await Sentry.captureMessage(text);
+    final SentryId sentryId =
+        await Sentry.captureMessage(text, level: SentryLevel.info);
 
     final userFeedback = SentryUserFeedback(
       eventId: sentryId,
@@ -141,9 +129,8 @@ class _FeedbackBottomModalSheetState extends State<FeedbackBottomModalSheet> {
       ),
     );
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: ListView(
         children: [
           Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
             Text(
@@ -265,6 +252,7 @@ class _FeedbackBottomModalSheetState extends State<FeedbackBottomModalSheet> {
             text: 'Отправить',
             onClick: _sendFeedback,
           ),
+          const SizedBox(height: 24),
         ],
       ),
     );

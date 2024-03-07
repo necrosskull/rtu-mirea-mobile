@@ -22,6 +22,7 @@ mixin _$UserEvent {
     required TResult Function() logIn,
     required TResult Function() logOut,
     required TResult Function() getUserData,
+    required TResult Function(User user) setAuntificatedData,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -30,6 +31,7 @@ mixin _$UserEvent {
     TResult? Function()? logIn,
     TResult? Function()? logOut,
     TResult? Function()? getUserData,
+    TResult? Function(User user)? setAuntificatedData,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -38,6 +40,7 @@ mixin _$UserEvent {
     TResult Function()? logIn,
     TResult Function()? logOut,
     TResult Function()? getUserData,
+    TResult Function(User user)? setAuntificatedData,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -47,6 +50,7 @@ mixin _$UserEvent {
     required TResult Function(_LogIn value) logIn,
     required TResult Function(_LogOut value) logOut,
     required TResult Function(_GetUserData value) getUserData,
+    required TResult Function(_SetAuntificatedData value) setAuntificatedData,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -55,6 +59,7 @@ mixin _$UserEvent {
     TResult? Function(_LogIn value)? logIn,
     TResult? Function(_LogOut value)? logOut,
     TResult? Function(_GetUserData value)? getUserData,
+    TResult? Function(_SetAuntificatedData value)? setAuntificatedData,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -63,6 +68,7 @@ mixin _$UserEvent {
     TResult Function(_LogIn value)? logIn,
     TResult Function(_LogOut value)? logOut,
     TResult Function(_GetUserData value)? getUserData,
+    TResult Function(_SetAuntificatedData value)? setAuntificatedData,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -86,24 +92,25 @@ class _$UserEventCopyWithImpl<$Res, $Val extends UserEvent>
 }
 
 /// @nodoc
-abstract class _$$_StartedCopyWith<$Res> {
-  factory _$$_StartedCopyWith(
-          _$_Started value, $Res Function(_$_Started) then) =
-      __$$_StartedCopyWithImpl<$Res>;
+abstract class _$$StartedImplCopyWith<$Res> {
+  factory _$$StartedImplCopyWith(
+          _$StartedImpl value, $Res Function(_$StartedImpl) then) =
+      __$$StartedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_StartedCopyWithImpl<$Res>
-    extends _$UserEventCopyWithImpl<$Res, _$_Started>
-    implements _$$_StartedCopyWith<$Res> {
-  __$$_StartedCopyWithImpl(_$_Started _value, $Res Function(_$_Started) _then)
+class __$$StartedImplCopyWithImpl<$Res>
+    extends _$UserEventCopyWithImpl<$Res, _$StartedImpl>
+    implements _$$StartedImplCopyWith<$Res> {
+  __$$StartedImplCopyWithImpl(
+      _$StartedImpl _value, $Res Function(_$StartedImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_Started implements _Started {
-  const _$_Started();
+class _$StartedImpl implements _Started {
+  const _$StartedImpl();
 
   @override
   String toString() {
@@ -113,7 +120,7 @@ class _$_Started implements _Started {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_Started);
+        (other.runtimeType == runtimeType && other is _$StartedImpl);
   }
 
   @override
@@ -126,6 +133,7 @@ class _$_Started implements _Started {
     required TResult Function() logIn,
     required TResult Function() logOut,
     required TResult Function() getUserData,
+    required TResult Function(User user) setAuntificatedData,
   }) {
     return started();
   }
@@ -137,6 +145,7 @@ class _$_Started implements _Started {
     TResult? Function()? logIn,
     TResult? Function()? logOut,
     TResult? Function()? getUserData,
+    TResult? Function(User user)? setAuntificatedData,
   }) {
     return started?.call();
   }
@@ -148,6 +157,7 @@ class _$_Started implements _Started {
     TResult Function()? logIn,
     TResult Function()? logOut,
     TResult Function()? getUserData,
+    TResult Function(User user)? setAuntificatedData,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -163,6 +173,7 @@ class _$_Started implements _Started {
     required TResult Function(_LogIn value) logIn,
     required TResult Function(_LogOut value) logOut,
     required TResult Function(_GetUserData value) getUserData,
+    required TResult Function(_SetAuntificatedData value) setAuntificatedData,
   }) {
     return started(this);
   }
@@ -174,6 +185,7 @@ class _$_Started implements _Started {
     TResult? Function(_LogIn value)? logIn,
     TResult? Function(_LogOut value)? logOut,
     TResult? Function(_GetUserData value)? getUserData,
+    TResult? Function(_SetAuntificatedData value)? setAuntificatedData,
   }) {
     return started?.call(this);
   }
@@ -185,6 +197,7 @@ class _$_Started implements _Started {
     TResult Function(_LogIn value)? logIn,
     TResult Function(_LogOut value)? logOut,
     TResult Function(_GetUserData value)? getUserData,
+    TResult Function(_SetAuntificatedData value)? setAuntificatedData,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -195,27 +208,29 @@ class _$_Started implements _Started {
 }
 
 abstract class _Started implements UserEvent {
-  const factory _Started() = _$_Started;
+  const factory _Started() = _$StartedImpl;
 }
 
 /// @nodoc
-abstract class _$$_LogInCopyWith<$Res> {
-  factory _$$_LogInCopyWith(_$_LogIn value, $Res Function(_$_LogIn) then) =
-      __$$_LogInCopyWithImpl<$Res>;
+abstract class _$$LogInImplCopyWith<$Res> {
+  factory _$$LogInImplCopyWith(
+          _$LogInImpl value, $Res Function(_$LogInImpl) then) =
+      __$$LogInImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_LogInCopyWithImpl<$Res>
-    extends _$UserEventCopyWithImpl<$Res, _$_LogIn>
-    implements _$$_LogInCopyWith<$Res> {
-  __$$_LogInCopyWithImpl(_$_LogIn _value, $Res Function(_$_LogIn) _then)
+class __$$LogInImplCopyWithImpl<$Res>
+    extends _$UserEventCopyWithImpl<$Res, _$LogInImpl>
+    implements _$$LogInImplCopyWith<$Res> {
+  __$$LogInImplCopyWithImpl(
+      _$LogInImpl _value, $Res Function(_$LogInImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_LogIn implements _LogIn {
-  const _$_LogIn();
+class _$LogInImpl implements _LogIn {
+  const _$LogInImpl();
 
   @override
   String toString() {
@@ -225,7 +240,7 @@ class _$_LogIn implements _LogIn {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_LogIn);
+        (other.runtimeType == runtimeType && other is _$LogInImpl);
   }
 
   @override
@@ -238,6 +253,7 @@ class _$_LogIn implements _LogIn {
     required TResult Function() logIn,
     required TResult Function() logOut,
     required TResult Function() getUserData,
+    required TResult Function(User user) setAuntificatedData,
   }) {
     return logIn();
   }
@@ -249,6 +265,7 @@ class _$_LogIn implements _LogIn {
     TResult? Function()? logIn,
     TResult? Function()? logOut,
     TResult? Function()? getUserData,
+    TResult? Function(User user)? setAuntificatedData,
   }) {
     return logIn?.call();
   }
@@ -260,6 +277,7 @@ class _$_LogIn implements _LogIn {
     TResult Function()? logIn,
     TResult Function()? logOut,
     TResult Function()? getUserData,
+    TResult Function(User user)? setAuntificatedData,
     required TResult orElse(),
   }) {
     if (logIn != null) {
@@ -275,6 +293,7 @@ class _$_LogIn implements _LogIn {
     required TResult Function(_LogIn value) logIn,
     required TResult Function(_LogOut value) logOut,
     required TResult Function(_GetUserData value) getUserData,
+    required TResult Function(_SetAuntificatedData value) setAuntificatedData,
   }) {
     return logIn(this);
   }
@@ -286,6 +305,7 @@ class _$_LogIn implements _LogIn {
     TResult? Function(_LogIn value)? logIn,
     TResult? Function(_LogOut value)? logOut,
     TResult? Function(_GetUserData value)? getUserData,
+    TResult? Function(_SetAuntificatedData value)? setAuntificatedData,
   }) {
     return logIn?.call(this);
   }
@@ -297,6 +317,7 @@ class _$_LogIn implements _LogIn {
     TResult Function(_LogIn value)? logIn,
     TResult Function(_LogOut value)? logOut,
     TResult Function(_GetUserData value)? getUserData,
+    TResult Function(_SetAuntificatedData value)? setAuntificatedData,
     required TResult orElse(),
   }) {
     if (logIn != null) {
@@ -307,27 +328,29 @@ class _$_LogIn implements _LogIn {
 }
 
 abstract class _LogIn implements UserEvent {
-  const factory _LogIn() = _$_LogIn;
+  const factory _LogIn() = _$LogInImpl;
 }
 
 /// @nodoc
-abstract class _$$_LogOutCopyWith<$Res> {
-  factory _$$_LogOutCopyWith(_$_LogOut value, $Res Function(_$_LogOut) then) =
-      __$$_LogOutCopyWithImpl<$Res>;
+abstract class _$$LogOutImplCopyWith<$Res> {
+  factory _$$LogOutImplCopyWith(
+          _$LogOutImpl value, $Res Function(_$LogOutImpl) then) =
+      __$$LogOutImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_LogOutCopyWithImpl<$Res>
-    extends _$UserEventCopyWithImpl<$Res, _$_LogOut>
-    implements _$$_LogOutCopyWith<$Res> {
-  __$$_LogOutCopyWithImpl(_$_LogOut _value, $Res Function(_$_LogOut) _then)
+class __$$LogOutImplCopyWithImpl<$Res>
+    extends _$UserEventCopyWithImpl<$Res, _$LogOutImpl>
+    implements _$$LogOutImplCopyWith<$Res> {
+  __$$LogOutImplCopyWithImpl(
+      _$LogOutImpl _value, $Res Function(_$LogOutImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_LogOut implements _LogOut {
-  const _$_LogOut();
+class _$LogOutImpl implements _LogOut {
+  const _$LogOutImpl();
 
   @override
   String toString() {
@@ -337,7 +360,7 @@ class _$_LogOut implements _LogOut {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_LogOut);
+        (other.runtimeType == runtimeType && other is _$LogOutImpl);
   }
 
   @override
@@ -350,6 +373,7 @@ class _$_LogOut implements _LogOut {
     required TResult Function() logIn,
     required TResult Function() logOut,
     required TResult Function() getUserData,
+    required TResult Function(User user) setAuntificatedData,
   }) {
     return logOut();
   }
@@ -361,6 +385,7 @@ class _$_LogOut implements _LogOut {
     TResult? Function()? logIn,
     TResult? Function()? logOut,
     TResult? Function()? getUserData,
+    TResult? Function(User user)? setAuntificatedData,
   }) {
     return logOut?.call();
   }
@@ -372,6 +397,7 @@ class _$_LogOut implements _LogOut {
     TResult Function()? logIn,
     TResult Function()? logOut,
     TResult Function()? getUserData,
+    TResult Function(User user)? setAuntificatedData,
     required TResult orElse(),
   }) {
     if (logOut != null) {
@@ -387,6 +413,7 @@ class _$_LogOut implements _LogOut {
     required TResult Function(_LogIn value) logIn,
     required TResult Function(_LogOut value) logOut,
     required TResult Function(_GetUserData value) getUserData,
+    required TResult Function(_SetAuntificatedData value) setAuntificatedData,
   }) {
     return logOut(this);
   }
@@ -398,6 +425,7 @@ class _$_LogOut implements _LogOut {
     TResult? Function(_LogIn value)? logIn,
     TResult? Function(_LogOut value)? logOut,
     TResult? Function(_GetUserData value)? getUserData,
+    TResult? Function(_SetAuntificatedData value)? setAuntificatedData,
   }) {
     return logOut?.call(this);
   }
@@ -409,6 +437,7 @@ class _$_LogOut implements _LogOut {
     TResult Function(_LogIn value)? logIn,
     TResult Function(_LogOut value)? logOut,
     TResult Function(_GetUserData value)? getUserData,
+    TResult Function(_SetAuntificatedData value)? setAuntificatedData,
     required TResult orElse(),
   }) {
     if (logOut != null) {
@@ -419,29 +448,29 @@ class _$_LogOut implements _LogOut {
 }
 
 abstract class _LogOut implements UserEvent {
-  const factory _LogOut() = _$_LogOut;
+  const factory _LogOut() = _$LogOutImpl;
 }
 
 /// @nodoc
-abstract class _$$_GetUserDataCopyWith<$Res> {
-  factory _$$_GetUserDataCopyWith(
-          _$_GetUserData value, $Res Function(_$_GetUserData) then) =
-      __$$_GetUserDataCopyWithImpl<$Res>;
+abstract class _$$GetUserDataImplCopyWith<$Res> {
+  factory _$$GetUserDataImplCopyWith(
+          _$GetUserDataImpl value, $Res Function(_$GetUserDataImpl) then) =
+      __$$GetUserDataImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_GetUserDataCopyWithImpl<$Res>
-    extends _$UserEventCopyWithImpl<$Res, _$_GetUserData>
-    implements _$$_GetUserDataCopyWith<$Res> {
-  __$$_GetUserDataCopyWithImpl(
-      _$_GetUserData _value, $Res Function(_$_GetUserData) _then)
+class __$$GetUserDataImplCopyWithImpl<$Res>
+    extends _$UserEventCopyWithImpl<$Res, _$GetUserDataImpl>
+    implements _$$GetUserDataImplCopyWith<$Res> {
+  __$$GetUserDataImplCopyWithImpl(
+      _$GetUserDataImpl _value, $Res Function(_$GetUserDataImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_GetUserData implements _GetUserData {
-  const _$_GetUserData();
+class _$GetUserDataImpl implements _GetUserData {
+  const _$GetUserDataImpl();
 
   @override
   String toString() {
@@ -451,7 +480,7 @@ class _$_GetUserData implements _GetUserData {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_GetUserData);
+        (other.runtimeType == runtimeType && other is _$GetUserDataImpl);
   }
 
   @override
@@ -464,6 +493,7 @@ class _$_GetUserData implements _GetUserData {
     required TResult Function() logIn,
     required TResult Function() logOut,
     required TResult Function() getUserData,
+    required TResult Function(User user) setAuntificatedData,
   }) {
     return getUserData();
   }
@@ -475,6 +505,7 @@ class _$_GetUserData implements _GetUserData {
     TResult? Function()? logIn,
     TResult? Function()? logOut,
     TResult? Function()? getUserData,
+    TResult? Function(User user)? setAuntificatedData,
   }) {
     return getUserData?.call();
   }
@@ -486,6 +517,7 @@ class _$_GetUserData implements _GetUserData {
     TResult Function()? logIn,
     TResult Function()? logOut,
     TResult Function()? getUserData,
+    TResult Function(User user)? setAuntificatedData,
     required TResult orElse(),
   }) {
     if (getUserData != null) {
@@ -501,6 +533,7 @@ class _$_GetUserData implements _GetUserData {
     required TResult Function(_LogIn value) logIn,
     required TResult Function(_LogOut value) logOut,
     required TResult Function(_GetUserData value) getUserData,
+    required TResult Function(_SetAuntificatedData value) setAuntificatedData,
   }) {
     return getUserData(this);
   }
@@ -512,6 +545,7 @@ class _$_GetUserData implements _GetUserData {
     TResult? Function(_LogIn value)? logIn,
     TResult? Function(_LogOut value)? logOut,
     TResult? Function(_GetUserData value)? getUserData,
+    TResult? Function(_SetAuntificatedData value)? setAuntificatedData,
   }) {
     return getUserData?.call(this);
   }
@@ -523,6 +557,7 @@ class _$_GetUserData implements _GetUserData {
     TResult Function(_LogIn value)? logIn,
     TResult Function(_LogOut value)? logOut,
     TResult Function(_GetUserData value)? getUserData,
+    TResult Function(_SetAuntificatedData value)? setAuntificatedData,
     required TResult orElse(),
   }) {
     if (getUserData != null) {
@@ -533,7 +568,160 @@ class _$_GetUserData implements _GetUserData {
 }
 
 abstract class _GetUserData implements UserEvent {
-  const factory _GetUserData() = _$_GetUserData;
+  const factory _GetUserData() = _$GetUserDataImpl;
+}
+
+/// @nodoc
+abstract class _$$SetAuntificatedDataImplCopyWith<$Res> {
+  factory _$$SetAuntificatedDataImplCopyWith(_$SetAuntificatedDataImpl value,
+          $Res Function(_$SetAuntificatedDataImpl) then) =
+      __$$SetAuntificatedDataImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({User user});
+}
+
+/// @nodoc
+class __$$SetAuntificatedDataImplCopyWithImpl<$Res>
+    extends _$UserEventCopyWithImpl<$Res, _$SetAuntificatedDataImpl>
+    implements _$$SetAuntificatedDataImplCopyWith<$Res> {
+  __$$SetAuntificatedDataImplCopyWithImpl(_$SetAuntificatedDataImpl _value,
+      $Res Function(_$SetAuntificatedDataImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? user = null,
+  }) {
+    return _then(_$SetAuntificatedDataImpl(
+      user: null == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as User,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SetAuntificatedDataImpl implements _SetAuntificatedData {
+  const _$SetAuntificatedDataImpl({required this.user});
+
+  @override
+  final User user;
+
+  @override
+  String toString() {
+    return 'UserEvent.setAuntificatedData(user: $user)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SetAuntificatedDataImpl &&
+            (identical(other.user, user) || other.user == user));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, user);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SetAuntificatedDataImplCopyWith<_$SetAuntificatedDataImpl> get copyWith =>
+      __$$SetAuntificatedDataImplCopyWithImpl<_$SetAuntificatedDataImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() started,
+    required TResult Function() logIn,
+    required TResult Function() logOut,
+    required TResult Function() getUserData,
+    required TResult Function(User user) setAuntificatedData,
+  }) {
+    return setAuntificatedData(user);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? started,
+    TResult? Function()? logIn,
+    TResult? Function()? logOut,
+    TResult? Function()? getUserData,
+    TResult? Function(User user)? setAuntificatedData,
+  }) {
+    return setAuntificatedData?.call(user);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? started,
+    TResult Function()? logIn,
+    TResult Function()? logOut,
+    TResult Function()? getUserData,
+    TResult Function(User user)? setAuntificatedData,
+    required TResult orElse(),
+  }) {
+    if (setAuntificatedData != null) {
+      return setAuntificatedData(user);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Started value) started,
+    required TResult Function(_LogIn value) logIn,
+    required TResult Function(_LogOut value) logOut,
+    required TResult Function(_GetUserData value) getUserData,
+    required TResult Function(_SetAuntificatedData value) setAuntificatedData,
+  }) {
+    return setAuntificatedData(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Started value)? started,
+    TResult? Function(_LogIn value)? logIn,
+    TResult? Function(_LogOut value)? logOut,
+    TResult? Function(_GetUserData value)? getUserData,
+    TResult? Function(_SetAuntificatedData value)? setAuntificatedData,
+  }) {
+    return setAuntificatedData?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Started value)? started,
+    TResult Function(_LogIn value)? logIn,
+    TResult Function(_LogOut value)? logOut,
+    TResult Function(_GetUserData value)? getUserData,
+    TResult Function(_SetAuntificatedData value)? setAuntificatedData,
+    required TResult orElse(),
+  }) {
+    if (setAuntificatedData != null) {
+      return setAuntificatedData(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _SetAuntificatedData implements UserEvent {
+  const factory _SetAuntificatedData({required final User user}) =
+      _$SetAuntificatedDataImpl;
+
+  User get user;
+  @JsonKey(ignore: true)
+  _$$SetAuntificatedDataImplCopyWith<_$SetAuntificatedDataImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -608,25 +796,25 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
 }
 
 /// @nodoc
-abstract class _$$_UnauthorizedCopyWith<$Res> {
-  factory _$$_UnauthorizedCopyWith(
-          _$_Unauthorized value, $Res Function(_$_Unauthorized) then) =
-      __$$_UnauthorizedCopyWithImpl<$Res>;
+abstract class _$$UnauthorizedImplCopyWith<$Res> {
+  factory _$$UnauthorizedImplCopyWith(
+          _$UnauthorizedImpl value, $Res Function(_$UnauthorizedImpl) then) =
+      __$$UnauthorizedImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_UnauthorizedCopyWithImpl<$Res>
-    extends _$UserStateCopyWithImpl<$Res, _$_Unauthorized>
-    implements _$$_UnauthorizedCopyWith<$Res> {
-  __$$_UnauthorizedCopyWithImpl(
-      _$_Unauthorized _value, $Res Function(_$_Unauthorized) _then)
+class __$$UnauthorizedImplCopyWithImpl<$Res>
+    extends _$UserStateCopyWithImpl<$Res, _$UnauthorizedImpl>
+    implements _$$UnauthorizedImplCopyWith<$Res> {
+  __$$UnauthorizedImplCopyWithImpl(
+      _$UnauthorizedImpl _value, $Res Function(_$UnauthorizedImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_Unauthorized implements _Unauthorized {
-  const _$_Unauthorized();
+class _$UnauthorizedImpl implements _Unauthorized {
+  const _$UnauthorizedImpl();
 
   @override
   String toString() {
@@ -636,7 +824,7 @@ class _$_Unauthorized implements _Unauthorized {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_Unauthorized);
+        (other.runtimeType == runtimeType && other is _$UnauthorizedImpl);
   }
 
   @override
@@ -718,28 +906,29 @@ class _$_Unauthorized implements _Unauthorized {
 }
 
 abstract class _Unauthorized implements UserState {
-  const factory _Unauthorized() = _$_Unauthorized;
+  const factory _Unauthorized() = _$UnauthorizedImpl;
 }
 
 /// @nodoc
-abstract class _$$_LoadingCopyWith<$Res> {
-  factory _$$_LoadingCopyWith(
-          _$_Loading value, $Res Function(_$_Loading) then) =
-      __$$_LoadingCopyWithImpl<$Res>;
+abstract class _$$LoadingImplCopyWith<$Res> {
+  factory _$$LoadingImplCopyWith(
+          _$LoadingImpl value, $Res Function(_$LoadingImpl) then) =
+      __$$LoadingImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_LoadingCopyWithImpl<$Res>
-    extends _$UserStateCopyWithImpl<$Res, _$_Loading>
-    implements _$$_LoadingCopyWith<$Res> {
-  __$$_LoadingCopyWithImpl(_$_Loading _value, $Res Function(_$_Loading) _then)
+class __$$LoadingImplCopyWithImpl<$Res>
+    extends _$UserStateCopyWithImpl<$Res, _$LoadingImpl>
+    implements _$$LoadingImplCopyWith<$Res> {
+  __$$LoadingImplCopyWithImpl(
+      _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_Loading implements _Loading {
-  const _$_Loading();
+class _$LoadingImpl implements _Loading {
+  const _$LoadingImpl();
 
   @override
   String toString() {
@@ -749,7 +938,7 @@ class _$_Loading implements _Loading {
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_Loading);
+        (other.runtimeType == runtimeType && other is _$LoadingImpl);
   }
 
   @override
@@ -831,24 +1020,24 @@ class _$_Loading implements _Loading {
 }
 
 abstract class _Loading implements UserState {
-  const factory _Loading() = _$_Loading;
+  const factory _Loading() = _$LoadingImpl;
 }
 
 /// @nodoc
-abstract class _$$_LogInErrorCopyWith<$Res> {
-  factory _$$_LogInErrorCopyWith(
-          _$_LogInError value, $Res Function(_$_LogInError) then) =
-      __$$_LogInErrorCopyWithImpl<$Res>;
+abstract class _$$LogInErrorImplCopyWith<$Res> {
+  factory _$$LogInErrorImplCopyWith(
+          _$LogInErrorImpl value, $Res Function(_$LogInErrorImpl) then) =
+      __$$LogInErrorImplCopyWithImpl<$Res>;
   @useResult
   $Res call({String cause});
 }
 
 /// @nodoc
-class __$$_LogInErrorCopyWithImpl<$Res>
-    extends _$UserStateCopyWithImpl<$Res, _$_LogInError>
-    implements _$$_LogInErrorCopyWith<$Res> {
-  __$$_LogInErrorCopyWithImpl(
-      _$_LogInError _value, $Res Function(_$_LogInError) _then)
+class __$$LogInErrorImplCopyWithImpl<$Res>
+    extends _$UserStateCopyWithImpl<$Res, _$LogInErrorImpl>
+    implements _$$LogInErrorImplCopyWith<$Res> {
+  __$$LogInErrorImplCopyWithImpl(
+      _$LogInErrorImpl _value, $Res Function(_$LogInErrorImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -856,7 +1045,7 @@ class __$$_LogInErrorCopyWithImpl<$Res>
   $Res call({
     Object? cause = null,
   }) {
-    return _then(_$_LogInError(
+    return _then(_$LogInErrorImpl(
       null == cause
           ? _value.cause
           : cause // ignore: cast_nullable_to_non_nullable
@@ -867,8 +1056,8 @@ class __$$_LogInErrorCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_LogInError implements _LogInError {
-  const _$_LogInError(this.cause);
+class _$LogInErrorImpl implements _LogInError {
+  const _$LogInErrorImpl(this.cause);
 
   @override
   final String cause;
@@ -882,7 +1071,7 @@ class _$_LogInError implements _LogInError {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LogInError &&
+            other is _$LogInErrorImpl &&
             (identical(other.cause, cause) || other.cause == cause));
   }
 
@@ -892,8 +1081,8 @@ class _$_LogInError implements _LogInError {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_LogInErrorCopyWith<_$_LogInError> get copyWith =>
-      __$$_LogInErrorCopyWithImpl<_$_LogInError>(this, _$identity);
+  _$$LogInErrorImplCopyWith<_$LogInErrorImpl> get copyWith =>
+      __$$LogInErrorImplCopyWithImpl<_$LogInErrorImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -971,29 +1160,29 @@ class _$_LogInError implements _LogInError {
 }
 
 abstract class _LogInError implements UserState {
-  const factory _LogInError(final String cause) = _$_LogInError;
+  const factory _LogInError(final String cause) = _$LogInErrorImpl;
 
   String get cause;
   @JsonKey(ignore: true)
-  _$$_LogInErrorCopyWith<_$_LogInError> get copyWith =>
+  _$$LogInErrorImplCopyWith<_$LogInErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$_LogInSuccessCopyWith<$Res> {
-  factory _$$_LogInSuccessCopyWith(
-          _$_LogInSuccess value, $Res Function(_$_LogInSuccess) then) =
-      __$$_LogInSuccessCopyWithImpl<$Res>;
+abstract class _$$LogInSuccessImplCopyWith<$Res> {
+  factory _$$LogInSuccessImplCopyWith(
+          _$LogInSuccessImpl value, $Res Function(_$LogInSuccessImpl) then) =
+      __$$LogInSuccessImplCopyWithImpl<$Res>;
   @useResult
   $Res call({User user});
 }
 
 /// @nodoc
-class __$$_LogInSuccessCopyWithImpl<$Res>
-    extends _$UserStateCopyWithImpl<$Res, _$_LogInSuccess>
-    implements _$$_LogInSuccessCopyWith<$Res> {
-  __$$_LogInSuccessCopyWithImpl(
-      _$_LogInSuccess _value, $Res Function(_$_LogInSuccess) _then)
+class __$$LogInSuccessImplCopyWithImpl<$Res>
+    extends _$UserStateCopyWithImpl<$Res, _$LogInSuccessImpl>
+    implements _$$LogInSuccessImplCopyWith<$Res> {
+  __$$LogInSuccessImplCopyWithImpl(
+      _$LogInSuccessImpl _value, $Res Function(_$LogInSuccessImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -1001,7 +1190,7 @@ class __$$_LogInSuccessCopyWithImpl<$Res>
   $Res call({
     Object? user = null,
   }) {
-    return _then(_$_LogInSuccess(
+    return _then(_$LogInSuccessImpl(
       null == user
           ? _value.user
           : user // ignore: cast_nullable_to_non_nullable
@@ -1012,8 +1201,8 @@ class __$$_LogInSuccessCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_LogInSuccess implements _LogInSuccess {
-  const _$_LogInSuccess(this.user);
+class _$LogInSuccessImpl implements _LogInSuccess {
+  const _$LogInSuccessImpl(this.user);
 
   @override
   final User user;
@@ -1027,7 +1216,7 @@ class _$_LogInSuccess implements _LogInSuccess {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LogInSuccess &&
+            other is _$LogInSuccessImpl &&
             (identical(other.user, user) || other.user == user));
   }
 
@@ -1037,8 +1226,8 @@ class _$_LogInSuccess implements _LogInSuccess {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_LogInSuccessCopyWith<_$_LogInSuccess> get copyWith =>
-      __$$_LogInSuccessCopyWithImpl<_$_LogInSuccess>(this, _$identity);
+  _$$LogInSuccessImplCopyWith<_$LogInSuccessImpl> get copyWith =>
+      __$$LogInSuccessImplCopyWithImpl<_$LogInSuccessImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1116,10 +1305,10 @@ class _$_LogInSuccess implements _LogInSuccess {
 }
 
 abstract class _LogInSuccess implements UserState {
-  const factory _LogInSuccess(final User user) = _$_LogInSuccess;
+  const factory _LogInSuccess(final User user) = _$LogInSuccessImpl;
 
   User get user;
   @JsonKey(ignore: true)
-  _$$_LogInSuccessCopyWith<_$_LogInSuccess> get copyWith =>
+  _$$LogInSuccessImplCopyWith<_$LogInSuccessImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

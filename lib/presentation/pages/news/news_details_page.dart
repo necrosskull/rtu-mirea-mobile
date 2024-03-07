@@ -3,9 +3,9 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_iframe/flutter_html_iframe.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:rtu_mirea_app/common/utils/strapi_utils.dart';
 import 'package:rtu_mirea_app/domain/entities/news_item.dart';
-import 'package:rtu_mirea_app/presentation/pages/news/widgets/tags_widgets.dart';
+import 'package:rtu_mirea_app/presentation/bloc/news_bloc/news_bloc.dart';
+import 'package:rtu_mirea_app/presentation/pages/news/widgets/tag_badge.dart';
 import 'package:rtu_mirea_app/presentation/widgets/images_horizontal_slider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:rtu_mirea_app/presentation/typography.dart';
@@ -29,10 +29,7 @@ class NewsDetailsPage extends StatelessWidget {
                 children: <Widget>[
                   Positioned.fill(
                     child: Image.network(
-                      newsItem.images[0].formats != null
-                          ? StrapiUtils.getMediumImageUrl(
-                              newsItem.images[0].formats!)
-                          : newsItem.images[0].url,
+                      newsItem.images[0],
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -69,12 +66,12 @@ class NewsDetailsPage extends StatelessWidget {
                             "body": Style(
                                 fontStyle: AppTextStyle.bodyRegular.fontStyle),
                           },
-                          customRenders: {
-                            // iframeRenderer to display the YouTube video player
-                            iframeMatcher(): iframeRender(),
-                          },
+                          extensions: const [
+                            // to display the YouTube video player
+                            IframeHtmlExtension(),
+                          ],
                           onLinkTap:
-                              (String? url, context, attributes, element) {
+                              (String? url, Map<String, String> attributes, _) {
                             if (url != null) {
                               launchUrlString(url);
                             }
@@ -107,16 +104,21 @@ class _NewsItemInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: tags.isNotEmpty
+      mainAxisAlignment: NewsBloc.isTagsNotEmpty(tags)
           ? MainAxisAlignment.spaceBetween
           : MainAxisAlignment.start,
       children: [
-        tags.isNotEmpty
+        NewsBloc.isTagsNotEmpty(tags)
             ? Expanded(
-                child: Tags(
-                  isClickable: false,
-                  withIcon: true,
-                  tags: tags,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: List.generate(
+                    tags.length,
+                    (index) => TagBadge(
+                      tag: tags[index],
+                    ),
+                  ),
                 ),
               )
             : Container(),
