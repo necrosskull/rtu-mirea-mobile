@@ -4,13 +4,10 @@ import 'package:rtu_mirea_app/domain/entities/score.dart';
 import 'package:rtu_mirea_app/presentation/bloc/scores_bloc/scores_bloc.dart';
 import 'package:rtu_mirea_app/presentation/bloc/user_bloc/user_bloc.dart';
 import 'package:rtu_mirea_app/presentation/pages/profile/widgets/score_result_card.dart';
-import 'package:rtu_mirea_app/presentation/pages/profile/widgets/scores_chart_modal.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
-import 'package:rtu_mirea_app/presentation/typography.dart';
-import 'package:rtu_mirea_app/presentation/widgets/buttons/primary_tab_button.dart';
+import 'package:app_ui/app_ui.dart';
 
 class ProfileScoresPage extends StatefulWidget {
-  const ProfileScoresPage({Key? key}) : super(key: key);
+  const ProfileScoresPage({super.key});
 
   @override
   State<ProfileScoresPage> createState() => _ProfileScoresPageState();
@@ -149,16 +146,16 @@ class _ProfileScoresPageState extends State<ProfileScoresPage> {
   void _showScoresChartModal() {
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      backgroundColor: AppTheme.colorsOf(context).background02,
+      backgroundColor: Theme.of(context).extension<AppColors>()!.background02,
       context: context,
       builder: (context) => BlocBuilder<ScoresBloc, ScoresState>(
         builder: (context, state) {
-          if (state.status == ScoresStatus.loaded) {
-            return ScoresChartModal(
-              scores: state.scores!,
-              averageRating: state.averageRating!,
-            );
-          }
+          // if (state.status == ScoresStatus.loaded) {
+          //   return ScoresChartModal(
+          //     scores: state.scores!,
+          //     averageRating: state.averageRating!,
+          //   );
+          // }
           return Container();
         },
       ),
@@ -177,10 +174,9 @@ class _ProfileScoresPageState extends State<ProfileScoresPage> {
 
 class _ScoresCardListView extends StatelessWidget {
   const _ScoresCardListView({
-    Key? key,
     required this.scores,
     required this.selectedSemester,
-  }) : super(key: key);
+  });
 
   final Map<String, List<Score>> scores;
   final String selectedSemester;
@@ -221,19 +217,19 @@ class _ScoresCardListView extends StatelessWidget {
 }
 
 class _AverageRatingCard extends StatelessWidget {
-  const _AverageRatingCard({Key? key}) : super(key: key);
+  const _AverageRatingCard();
 
   Color _getAverageRatingColor(double averageRating) {
     if (averageRating >= 4.5) {
       return Colors.green;
     }
     if (averageRating >= 4.0) {
-      return AppTheme.colors.colorful05;
+      return AppColors.dark.colorful05;
     }
     if (averageRating >= 3.0) {
-      return AppTheme.colors.colorful06;
+      return AppColors.dark.colorful06;
     } else {
-      return AppTheme.colors.colorful07;
+      return AppColors.dark.colorful07;
     }
   }
 
@@ -247,7 +243,7 @@ class _AverageRatingCard extends StatelessWidget {
         if (state.status == ScoresStatus.loaded) {
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-            color: AppTheme.colorsOf(context).background02,
+            color: Theme.of(context).extension<AppColors>()!.background02,
             elevation: 6,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -262,7 +258,7 @@ class _AverageRatingCard extends StatelessWidget {
                     child: Text(
                       averageRating[selectedSemester].toString(),
                       style: AppTextStyle.h6.copyWith(
-                        color: AppTheme.colorsOf(context).background01,
+                        color: Theme.of(context).extension<AppColors>()!.background01,
                       ),
                     ),
                   ),

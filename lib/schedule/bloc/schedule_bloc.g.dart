@@ -6,8 +6,7 @@ part of 'schedule_bloc.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ScheduleState _$ScheduleStateFromJson(Map<String, dynamic> json) => ScheduleState(
-      status: $enumDecode(_$ScheduleStatusEnumMap, json['status']),
+_$ScheduleStateImpl _$$ScheduleStateImplFromJson(Map<String, dynamic> json) => _$ScheduleStateImpl(
       classroomsSchedule: (json['classroomsSchedule'] as List<dynamic>?)
               ?.map((e) => _$recordConvert(
                     e,
@@ -49,50 +48,49 @@ ScheduleState _$ScheduleStateFromJson(Map<String, dynamic> json) => ScheduleStat
           const [],
       isMiniature: json['isMiniature'] as bool? ?? false,
       comments: (json['comments'] as List<dynamic>?)
-              ?.map((e) => ScheduleComment.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => LessonComment.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
       showEmptyLessons: json['showEmptyLessons'] as bool? ?? false,
       showCommentsIndicators: json['showCommentsIndicators'] as bool? ?? true,
+      isListModeEnabled: json['isListModeEnabled'] as bool? ?? false,
+      scheduleComments: (json['scheduleComments'] as List<dynamic>?)
+              ?.map((e) => ScheduleComment.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       selectedSchedule: const SelectedScheduleConverter().fromJson(json['selectedSchedule'] as Map<String, dynamic>?),
     );
 
-Map<String, dynamic> _$ScheduleStateToJson(ScheduleState instance) => <String, dynamic>{
-      'status': _$ScheduleStatusEnumMap[instance.status]!,
+Map<String, dynamic> _$$ScheduleStateImplToJson(_$ScheduleStateImpl instance) => <String, dynamic>{
       'classroomsSchedule': instance.classroomsSchedule
-          .map((e) => {
+          .map((e) => <String, dynamic>{
                 r'$1': e.$1,
                 r'$2': e.$2,
                 r'$3': e.$3,
               })
           .toList(),
       'teachersSchedule': instance.teachersSchedule
-          .map((e) => {
+          .map((e) => <String, dynamic>{
                 r'$1': e.$1,
                 r'$2': e.$2,
                 r'$3': e.$3,
               })
           .toList(),
       'groupsSchedule': instance.groupsSchedule
-          .map((e) => {
+          .map((e) => <String, dynamic>{
                 r'$1': e.$1,
                 r'$2': e.$2,
                 r'$3': e.$3,
               })
           .toList(),
-      'comments': instance.comments,
       'isMiniature': instance.isMiniature,
-      'showCommentsIndicators': instance.showCommentsIndicators,
+      'comments': instance.comments,
       'showEmptyLessons': instance.showEmptyLessons,
+      'showCommentsIndicators': instance.showCommentsIndicators,
+      'isListModeEnabled': instance.isListModeEnabled,
+      'scheduleComments': instance.scheduleComments,
       'selectedSchedule': const SelectedScheduleConverter().toJson(instance.selectedSchedule),
     };
-
-const _$ScheduleStatusEnumMap = {
-  ScheduleStatus.initial: 'initial',
-  ScheduleStatus.loading: 'loading',
-  ScheduleStatus.failure: 'failure',
-  ScheduleStatus.loaded: 'loaded',
-};
 
 $Rec _$recordConvert<$Rec>(
   Object? value,

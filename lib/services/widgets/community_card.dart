@@ -1,17 +1,17 @@
+import 'package:enough_platform_widgets/enough_platform_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
-import 'package:rtu_mirea_app/presentation/typography.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommunityCard extends StatelessWidget {
   const CommunityCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.url,
     required this.logo,
     this.description,
     this.launchMode = LaunchMode.externalApplication,
-  }) : super(key: key);
+  });
 
   final String title;
   final String url;
@@ -22,11 +22,11 @@ class CommunityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: AppTheme.colorsOf(context).background02,
+      color: Theme.of(context).extension<AppColors>()!.background02,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      child: InkWell(
+      child: PlatformInkWell(
         onTap: () {
           final Uri url = Uri.parse(this.url);
           launchUrl(url, mode: launchMode);
@@ -47,7 +47,7 @@ class CommunityCard extends StatelessWidget {
                     Text(
                       title,
                       style: AppTextStyle.titleM.copyWith(
-                        color: AppTheme.colorsOf(context).active,
+                        color: Theme.of(context).extension<AppColors>()!.active,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -56,7 +56,7 @@ class CommunityCard extends StatelessWidget {
                       Text(
                         description!,
                         style: AppTextStyle.captionL.copyWith(
-                          color: AppTheme.colorsOf(context).deactive,
+                          color: Theme.of(context).extension<AppColors>()!.deactive,
                           height: 1.1,
                         ),
                         maxLines: 3,

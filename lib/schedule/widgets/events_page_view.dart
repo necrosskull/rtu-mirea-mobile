@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'calendar.dart';
+import 'calendar/table_calendar.dart';
 
 class EventsPageView extends StatelessWidget {
   const EventsPageView({
-    Key? key,
+    super.key,
     required this.controller,
     required this.itemBuilder,
-  }) : super(key: key);
+  });
 
   final PageController controller;
 

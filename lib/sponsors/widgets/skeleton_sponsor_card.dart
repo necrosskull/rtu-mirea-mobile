@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonSponsorCard extends StatelessWidget {
-  const SkeletonSponsorCard({Key? key}) : super(key: key);
+  const SkeletonSponsorCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: AppTheme.colorsOf(context).background03,
-      highlightColor: AppTheme.colorsOf(context).background02,
+      baseColor: Theme.of(context).extension<AppColors>()!.background03,
+      highlightColor: Theme.of(context).extension<AppColors>()!.background02,
       child: Card(
-        color: AppTheme.colorsOf(context).background02,
+        color: Theme.of(context).extension<AppColors>()!.background02,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),

@@ -4,16 +4,19 @@ import 'package:discourse_repository/discourse_repository.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nfc_pass_repository/nfc_pass_repository.dart';
 import 'package:notifications_repository/notifications_repository.dart';
 import 'package:rtu_mirea_app/app/app.dart';
 import 'package:rtu_mirea_app/domain/repositories/news_repository.dart';
+import 'package:rtu_mirea_app/neon/neon.dart';
+import 'package:rtu_mirea_app/nfc_pass/bloc/nfc_pass_cubit.dart';
+import 'package:rtu_mirea_app/schedule_management/bloc/schedule_exporter_cubit.dart';
 import 'package:rtu_mirea_app/service_locator.dart';
+import 'package:schedule_exporter_repository/schedule_exporter_repository.dart';
 import 'package:schedule_repository/schedule_repository.dart';
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:provider/single_child_widget.dart';
 import 'package:rtu_mirea_app/analytics/bloc/analytics_bloc.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -28,23 +31,12 @@ import 'package:rtu_mirea_app/presentation/bloc/notification_preferences/notific
 
 import 'package:rtu_mirea_app/presentation/bloc/scores_bloc/scores_bloc.dart';
 import 'package:rtu_mirea_app/presentation/bloc/user_bloc/user_bloc.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:rtu_mirea_app/schedule/bloc/schedule_bloc.dart';
 import 'package:rtu_mirea_app/stories/bloc/stories_bloc.dart';
 
-import 'package:schedule_repository/schedule_repository.dart' as schedule_repository;
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:neon_framework/models.dart' as neon_models;
-import 'package:neon_framework/src/bloc/result.dart' as neon_bloc_result;
-import 'package:nextcloud/core.dart' as neon_core;
-import 'package:neon_framework/src/widgets/options_collection_builder.dart';
-import 'package:neon_framework/src/utils/global_options.dart';
-import 'package:neon_framework/src/blocs/accounts.dart';
-import 'package:neon_framework/src/utils/provider.dart';
 import 'package:neon_framework/l10n/localizations.dart' as neon_localizations;
-import 'package:neon_framework/theme.dart' as neon_theme;
-import 'package:neon_framework/src/theme/theme.dart' as app_neon_theme;
-import 'package:neon_framework/src/theme/server.dart' as neon_server_theme;
 
 class App extends StatelessWidget {
   const App({
@@ -55,8 +47,9 @@ class App extends StatelessWidget {
     required DiscourseRepository discourseRepository,
     required NewsRepository newsRepository,
     required NotificationsRepository notificationsRepository,
-    required List<SingleChildWidget> neonProviders,
-    required neon_theme.NeonTheme neonTheme,
+    required ScheduleExporterRepository scheduleExporterRepository,
+    required NeonDependencies neonDependencies,
+    required NfcPassRepository nfcPassRepository,
     required super.key,
   })  : _analyticsRepository = analyticsRepository,
         _scheduleRepository = scheduleRepository,
@@ -65,8 +58,9 @@ class App extends StatelessWidget {
         _discourseRepository = discourseRepository,
         _newsRepository = newsRepository,
         _notificationsRepository = notificationsRepository,
-        _neonTheme = neonTheme,
-        _neonProviders = neonProviders;
+        _scheduleExporterRepository = scheduleExporterRepository,
+        _neonDependencies = neonDependencies,
+        _nfcPassRepository = nfcPassRepository;
 
   final AnalyticsRepository _analyticsRepository;
   final ScheduleRepository _scheduleRepository;
@@ -75,8 +69,9 @@ class App extends StatelessWidget {
   final DiscourseRepository _discourseRepository;
   final NewsRepository _newsRepository;
   final NotificationsRepository _notificationsRepository;
-  final neon_theme.NeonTheme _neonTheme;
-  final List<SingleChildWidget> _neonProviders;
+  final ScheduleExporterRepository _scheduleExporterRepository;
+  final NeonDependencies _neonDependencies;
+  final NfcPassRepository _nfcPassRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +82,14 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: _communityRepository),
         RepositoryProvider.value(value: _storiesRepository),
         RepositoryProvider.value(value: _discourseRepository),
+        RepositoryProvider.value(value: _scheduleExporterRepository),
+        RepositoryProvider.value(value: _nfcPassRepository),
       ],
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(
+            create: (_) => ScheduleExporterCubit(_scheduleExporterRepository),
+          ),
           BlocProvider(
             create: (_) => AppBloc(
               firebaseMessaging: FirebaseMessaging.instance,
@@ -103,7 +103,7 @@ class App extends StatelessWidget {
           ),
           BlocProvider<ScheduleBloc>(
             create: (context) => ScheduleBloc(
-              scheduleRepository: context.read<schedule_repository.ScheduleRepository>(),
+              scheduleRepository: context.read<ScheduleRepository>(),
             )..add(const RefreshSelectedScheduleData()),
           ),
           BlocProvider<StoriesBloc>(
@@ -121,168 +121,115 @@ class App extends StatelessWidget {
           BlocProvider<NotificationPreferencesBloc>(
             create: (_) => getIt<NotificationPreferencesBloc>(),
           ),
-        ],
-        child: MultiProvider(
-          providers: _neonProviders,
-          child: _NeonProvider(
-            key: _neonWrapperKey,
-            neonTheme: _neonTheme,
-            builder: (theme) {
-              final light = AppTheme.lightTheme.copyWith(extensions: [
-                theme.serverTheme,
-                theme.neonTheme,
-              ]);
-              final dark = AppTheme.darkTheme.copyWith(extensions: [
-                theme.serverTheme,
-                theme.neonTheme,
-              ]);
-              return _MaterialApp(
-                lightTheme: light,
-                darkTheme: dark,
-              );
-            },
+          BlocProvider<NfcPassCubit>(
+            create: (_) => NfcPassCubit(
+              repository: _nfcPassRepository,
+            ),
           ),
+        ],
+        child: _AppView(
+          neonDependencies: _neonDependencies,
         ),
       ),
     );
   }
 }
 
-final _neonWrapperKey = GlobalKey<_NeonProviderState>();
+class _AppView extends StatefulWidget {
+  const _AppView({
+    required this.neonDependencies,
+  });
 
-class _NeonProvider extends StatefulWidget {
-  const _NeonProvider({
-    Key? key,
-    required this.builder,
-    required this.neonTheme,
-  }) : super(key: key);
-
-  final Widget Function(app_neon_theme.AppTheme) builder;
-  final neon_theme.NeonTheme neonTheme;
+  final NeonDependencies neonDependencies;
 
   @override
-  State<_NeonProvider> createState() => _NeonProviderState();
+  State<_AppView> createState() => _AppViewState();
 }
 
-class _NeonProviderState extends State<_NeonProvider> {
-  late final BuiltSet<neon_models.AppImplementation> _appImplementations;
-  late final GlobalOptions _globalOptions;
-  late final AccountsBloc _accountsBloc;
+class _AppViewState extends State<_AppView> {
+  late final GoRouter _router;
+  late final List<LocalizationsDelegate<dynamic>> _neonLocalizationsDelegates;
 
   @override
   void initState() {
     super.initState();
-
-    _appImplementations = NeonProvider.of<BuiltSet<neon_models.AppImplementation>>(context);
-    _globalOptions = NeonProvider.of<GlobalOptions>(context);
-    _accountsBloc = NeonProvider.of<AccountsBloc>(context);
+    _router = getIt<GoRouter>();
+    _neonLocalizationsDelegates = _buildNeonLocalizationsDelegates();
   }
 
-  List<LocalizationsDelegate<dynamic>> getNeonLocalizationsDelegates() {
+  List<LocalizationsDelegate<dynamic>> _buildNeonLocalizationsDelegates() {
     return [
-      ..._appImplementations.map((app) => app.localizationsDelegate),
+      ...widget.neonDependencies.appImplementations.map((app) => app.localizationsDelegate),
       ...neon_localizations.NeonLocalizations.localizationsDelegates,
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return OptionsCollectionBuilder(
-      valueListenable: _globalOptions,
-      builder: (context, options, _) => StreamBuilder<neon_models.Account?>(
-        stream: _accountsBloc.activeAccount,
-        builder: (context, activeAccountSnapshot) {
-          return neon_bloc_result
-              .ResultBuilder<neon_core.OcsGetCapabilitiesResponseApplicationJson_Ocs_Data?>.behaviorSubject(
-            subject: activeAccountSnapshot.hasData
-                ? _accountsBloc.getCapabilitiesBlocFor(activeAccountSnapshot.data!).capabilities
-                : null,
-            builder: (context, capabilitiesSnapshot) {
-              final appTheme = app_neon_theme.AppTheme(
-                serverTheme: neon_server_theme.ServerTheme(
-                  nextcloudTheme: capabilitiesSnapshot.data?.capabilities.themingPublicCapabilities?.theming,
-                ),
-                useNextcloudTheme: false,
-                deviceThemeLight: AppTheme.lightTheme.colorScheme,
-                deviceThemeDark: AppTheme.darkTheme.colorScheme,
-                appThemes: _appImplementations.map((a) => a.theme).whereType<ThemeExtension>(),
-                neonTheme: widget.neonTheme,
-              );
+    final neonTheme = widget.neonDependencies.neonTheme;
 
-              return widget.builder(appTheme);
+    final lightTheme = AppTheme.lightTheme.copyWith(extensions: [neonTheme, AppColors.light]);
+    final darkTheme = AppTheme.darkTheme.copyWith(extensions: [neonTheme, AppColors.dark]);
+
+    final cupertinoLightTheme = MaterialBasedCupertinoThemeData(
+      materialTheme: lightTheme,
+    );
+    final cupertinoDarkTheme = MaterialBasedCupertinoThemeData(
+      materialTheme: darkTheme,
+    );
+
+    return PlatformProvider(
+      builder: (context) => AdaptiveTheme(
+        light: lightTheme,
+        dark: darkTheme,
+        initial: AdaptiveThemeMode.dark,
+        builder: (theme, darkTheme) {
+          _configureSystemUI(theme);
+
+          return PlatformTheme(
+            themeMode: theme.brightness == Brightness.light ? ThemeMode.light : ThemeMode.dark,
+            materialLightTheme: lightTheme,
+            materialDarkTheme: darkTheme,
+            cupertinoLightTheme: cupertinoLightTheme,
+            cupertinoDarkTheme: cupertinoDarkTheme,
+            builder: (context) {
+              return FirebaseInteractedMessageListener(
+                child: WatchConnectivityWrapper(
+                  child: NeonAppProvider(
+                    neonDependencies: widget.neonDependencies,
+                    child: PlatformApp.router(
+                      restorationScopeId: 'app',
+                      localizationsDelegates: [
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
+                        ..._neonLocalizationsDelegates,
+                      ],
+                      supportedLocales: const [Locale('en'), Locale('ru')],
+                      locale: const Locale('ru'),
+                      debugShowCheckedModeBanner: false,
+                      title: 'Приложение РТУ МИРЭА',
+                      routerConfig: _router,
+                    ),
+                  ),
+                ),
+              );
             },
           );
         },
       ),
     );
   }
-}
 
-class _MaterialApp extends StatefulWidget {
-  const _MaterialApp({
-    Key? key,
-    required this.lightTheme,
-    required this.darkTheme,
-  }) : super(key: key);
-
-  final ThemeData lightTheme;
-  final ThemeData darkTheme;
-
-  @override
-  State<_MaterialApp> createState() => _MaterialAppState();
-}
-
-class _MaterialAppState extends State<_MaterialApp> {
-  _MaterialAppState();
-
-  late final GoRouter router;
-  late final List<LocalizationsDelegate<dynamic>> neonLocalizationsDelegates;
-
-  @override
-  void initState() {
-    super.initState();
-
-    router = getIt<GoRouter>();
-    neonLocalizationsDelegates =
-        _neonWrapperKey.currentState!.getNeonLocalizationsDelegates().cast<LocalizationsDelegate<dynamic>>();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AdaptiveTheme(
-      light: widget.lightTheme,
-      dark: widget.darkTheme,
-      initial: AdaptiveThemeMode.dark,
-      builder: (theme, darkTheme) {
-        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-            systemNavigationBarColor: theme.scaffoldBackgroundColor,
-            statusBarColor: theme.scaffoldBackgroundColor,
-            statusBarIconBrightness: theme.brightness == Brightness.light ? Brightness.light : Brightness.dark,
-            systemNavigationBarIconBrightness:
-                theme.brightness == Brightness.light ? Brightness.light : Brightness.dark));
-
-        return FirebaseInteractedMessageListener(
-          child: MaterialApp.router(
-            restorationScopeId: "app",
-            localizationsDelegates: [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-              ...neonLocalizationsDelegates,
-            ],
-            supportedLocales: const [
-              Locale('en'),
-              Locale('ru'),
-            ],
-            locale: const Locale('ru'),
-            debugShowCheckedModeBanner: false,
-            title: 'Приложение РТУ МИРЭА',
-            routerConfig: router,
-            theme: theme,
-            darkTheme: darkTheme,
-          ),
-        );
-      },
+  /// Configure status bar and navigation bar colors/icons according to the theme.
+  void _configureSystemUI(ThemeData theme) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: theme.scaffoldBackgroundColor,
+        statusBarColor: theme.scaffoldBackgroundColor,
+        statusBarIconBrightness: theme.brightness == Brightness.light ? Brightness.dark : Brightness.light,
+        systemNavigationBarIconBrightness: theme.brightness == Brightness.light ? Brightness.dark : Brightness.light,
+      ),
     );
   }
 }

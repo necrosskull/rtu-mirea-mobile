@@ -4,12 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:rtu_mirea_app/home/cubit/home_cubit.dart';
 import 'package:rtu_mirea_app/onboarding/widgets/widgets.dart';
-import 'package:rtu_mirea_app/presentation/typography.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
+import 'package:app_ui/app_ui.dart';
 
 /// OnBoarding screen that greets new users
 class OnBoardingPage extends StatefulWidget {
-  const OnBoardingPage({Key? key}) : super(key: key);
+  const OnBoardingPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _OnBoardingPageState();
@@ -19,22 +18,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   final int _numPages = 3;
 
   /// Main images
-  static const List<Image> containersImages = [
-    Image(
-      image: AssetImage('assets/images/Saly-1.png'),
-      height: 375.0,
-      width: 375.0,
-    ),
-    Image(
-      image: AssetImage('assets/images/Saly-2.png'),
-      height: 324.0,
-      width: 328.0,
-    ),
-    Image(
-      image: AssetImage('assets/images/Saly-3.png'),
-      height: 315.0,
-      width: 315.0,
-    ),
+  static List<Image> containersImages = [
+    Assets.images.saly1.image(height: 375.0, width: 375.0),
+    Assets.images.saly2.image(height: 324.0, width: 328.0),
+    Assets.images.saly3.image(height: 315.0, width: 315.0),
     // Image(
     //   image: AssetImage('assets/images/Saly-4.png'),
     //   height: 375.0,
@@ -143,7 +130,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
 
     return Scaffold(
-      backgroundColor: AppTheme.colorsOf(context).background01,
+      backgroundColor: Theme.of(context).extension<AppColors>()!.background01,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -170,10 +157,10 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
 class PageIndicators extends StatefulWidget {
   const PageIndicators({
-    Key? key,
+    super.key,
     required this.onClick,
     required this.dotsNum,
-  }) : super(key: key);
+  });
 
   final VoidCallback onClick;
   final int dotsNum;
@@ -208,20 +195,34 @@ class _PageIndicatorsState extends State<PageIndicators> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          widget.dotsNum - 1 == _currentPage
-              ? Container()
-              : TextButton(
-                  onPressed: () {
-                    context.read<HomeCubit>().closeOnboarding();
-                    context.go('/schedule');
-                  },
-                  child: Text(
-                    "Пропустить",
-                    style: AppTextStyle.buttonS.copyWith(
-                      color: AppTheme.colorsOf(context).active,
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SizeTransition(
+                  sizeFactor: animation,
+                  axis: Axis.horizontal,
+                  child: child,
+                ),
+              );
+            },
+            child: widget.dotsNum - 1 == _currentPage
+                ? const SizedBox.shrink()
+                : TextButton(
+                    key: const ValueKey("skipButton"),
+                    onPressed: () {
+                      context.read<HomeCubit>().closeOnboarding();
+                      context.go('/schedule');
+                    },
+                    child: Text(
+                      "Пропустить",
+                      style: AppTextStyle.buttonS.copyWith(
+                        color: Theme.of(context).extension<AppColors>()!.active,
+                      ),
                     ),
                   ),
-                ),
+          ),
           Row(
             children: _buildPageIndicators(_currentPage),
           ),

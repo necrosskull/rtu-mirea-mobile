@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
-import 'package:rtu_mirea_app/presentation/typography.dart';
-import 'package:rtu_mirea_app/presentation/widgets/forms/text_input.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:rtu_mirea_app/schedule/models/models.dart';
 import 'package:rtu_mirea_app/schedule/schedule.dart';
 import 'package:university_app_server_api/client.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:yandex_maps_mapkit_lite/mapkit.dart';
+import 'package:yandex_maps_mapkit_lite/mapkit_factory.dart';
+import 'package:yandex_maps_mapkit_lite/yandex_map.dart';
 
 class ScheduleDetailsPage extends StatefulWidget {
   const ScheduleDetailsPage({
@@ -31,13 +29,20 @@ class ScheduleDetailsPage extends StatefulWidget {
   State<ScheduleDetailsPage> createState() => _ScheduleDetailsPageState();
 }
 
-class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
-  final mapTileLayer = TileLayer(
-    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    userAgentPackageName: 'ninja.mirea.mireaapp',
-    tileProvider: CancellableNetworkTileProvider(),
-  );
+/// Listener for user interactions with the map.
+final class _MapInputListener extends MapInputListener {
+  @override
+  void onMapTap(Map map, Point point) {
+    launchUrlString(
+      'https://yandex.ru/maps/?ll=${point.longitude},${point.latitude}&z=15&mode=whatshere&whatshere%5Bpoint%5D=${point.longitude},${point.latitude}&whatshere%5Bzoom%5D=15&whatshere%5Bdirection%5D=down&whatshere%5Bviewport%5D=%5B${point.longitude - 0.0001},${point.latitude - 0.0001}%2C${point.longitude + 0.0001},${point.latitude + 0.0001}%5D&basemap=map',
+    );
+  }
 
+  @override
+  void onMapLongTap(Map map, Point point) {}
+}
+
+class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
   late final TextEditingController _textController;
 
   @override
@@ -66,7 +71,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
 
       bloc.add(
         SetLessonComment(
-          comment: ScheduleComment(
+          comment: LessonComment(
             subjectName: widget.lesson.subject,
             lessonDate: widget.lesson.dates.first,
             lessonBells: widget.lesson.lessonBells,
@@ -77,7 +82,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
     });
   }
 
-  ScheduleComment? _getComment() {
+  LessonComment? _getComment() {
     final bloc = context.read<ScheduleBloc>();
 
     return bloc.state.comments.firstWhereOrNull(
@@ -145,11 +150,13 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
               controller: _textController,
               errorText: _textErrorText,
               maxLines: 5,
-              fillColor:
-                  AdaptiveTheme.of(context).mode.isDark ? AppTheme.colorsOf(context).background03 : Colors.white),
+              fillColor: AdaptiveTheme.of(context).mode.isDark
+                  ? Theme.of(context).extension<AppColors>()!.background03
+                  : Colors.white),
         ),
       ),
       const Divider(),
+      const SizedBox(height: 48),
     ]);
 
     return content;
@@ -220,39 +227,22 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
   SizedBox _buildClassroomMap(Classroom classroom) {
     return SizedBox(
       height: 200,
-      child: FlutterMap(
-        options: MapOptions(
-          initialZoom: 15,
-          interactionOptions: const InteractionOptions(
-            flags: InteractiveFlag.none,
+      child: YandexMap(onMapCreated: (mapWindow) {
+        mapkit.onStart();
+        mapWindow.map.move(
+          CameraPosition(
+            Point(latitude: classroom.campus!.latitude!, longitude: classroom.campus!.longitude!),
+            zoom: 16.0,
+            azimuth: 0.0,
+            tilt: 30.0,
           ),
-          initialCenter: LatLng(
-            classroom.campus!.latitude!,
-            classroom.campus!.longitude!,
-          ),
-          crs: const Epsg3857(),
-          onTap: (tapPosition, point) {
-            launchUrlString(
-                'https://yandex.ru/maps/?ll=${classroom.campus!.longitude},${classroom.campus!.latitude}&z=15&mode=whatshere&whatshere%5Bpoint%5D=${classroom.campus!.longitude},${classroom.campus!.latitude}&whatshere%5Bzoom%5D=15&whatshere%5Bdirection%5D=down&whatshere%5Bviewport%5D=%5B${classroom.campus!.longitude! - 0.0001},${classroom.campus!.latitude! - 0.0001}%2C${classroom.campus!.longitude! + 0.0001},${classroom.campus!.latitude! + 0.0001}%5D&basemap=map');
-          },
-        ),
-        children: [
-          mapTileLayer,
-          CircleLayer(
-            circles: [
-              CircleMarker(
-                point: LatLng(
-                  classroom.campus!.latitude!,
-                  classroom.campus!.longitude!,
-                ),
-                color: AppTheme.colors.primary,
-                borderColor: AppTheme.colors.colorful01,
-                radius: 5,
-              ),
-            ],
-          ),
-        ],
-      ),
+        );
+        mapWindow.map.addInputListener(_MapInputListener());
+        mapWindow.map.mapObjects.addPlacemark().geometry = Point(
+          latitude: classroom.campus!.latitude!,
+          longitude: classroom.campus!.longitude!,
+        );
+      }),
     );
   }
 
@@ -266,6 +256,7 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
               return InputChip(
                 label: Text(group),
                 onPressed: () => context.go('/schedule/search', extra: group),
+                side: BorderSide(color: Theme.of(context).extension<AppColors>()!.deactiveDarker),
               );
             }).toList() ??
             [],
@@ -289,14 +280,14 @@ class _ScheduleDetailsPageState extends State<ScheduleDetailsPage> {
             title: Text(
               teacher.name,
               style: AppTextStyle.titleM.copyWith(
-                color: AppTheme.colorsOf(context).active,
+                color: Theme.of(context).extension<AppColors>()!.active,
               ),
             ),
             subtitle: teacher.post != null
                 ? Text(
                     teacher.post!,
                     style: AppTextStyle.captionS.copyWith(
-                      color: AppTheme.colorsOf(context).deactive,
+                      color: Theme.of(context).extension<AppColors>()!.deactive,
                     ),
                   )
                 : null,

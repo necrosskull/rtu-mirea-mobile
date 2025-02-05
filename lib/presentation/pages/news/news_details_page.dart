@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html_iframe/flutter_html_iframe.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:rtu_mirea_app/domain/entities/news_item.dart';
 import 'package:rtu_mirea_app/presentation/bloc/news_bloc/news_bloc.dart';
 import 'package:rtu_mirea_app/presentation/pages/news/widgets/tag_badge.dart';
-import 'package:rtu_mirea_app/presentation/widgets/images_horizontal_slider.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:rtu_mirea_app/presentation/typography.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
 
 class NewsDetailsPage extends StatelessWidget {
-  const NewsDetailsPage({Key? key, required this.newsItem}) : super(key: key);
+  const NewsDetailsPage({super.key, required this.newsItem});
 
   final NewsItem newsItem;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.colorsOf(context).background01,
+      backgroundColor: Theme.of(context).extension<AppColors>()!.background01,
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
@@ -41,7 +38,7 @@ class NewsDetailsPage extends StatelessWidget {
         body: SafeArea(
           bottom: false,
           child: Container(
-            color: AppTheme.colorsOf(context).background01,
+            color: Theme.of(context).extension<AppColors>()!.background01,
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
@@ -63,26 +60,26 @@ class NewsDetailsPage extends StatelessWidget {
                           data: newsItem.text,
                           style: {
                             "body": Style(
-                              color: AppTheme.colorsOf(context).active,
+                              color: Theme.of(context).extension<AppColors>()!.active,
                               fontStyle: AppTextStyle.bodyRegular
                                   .copyWith(
-                                    color: AppTheme.colorsOf(context).active,
+                                    color: Theme.of(context).extension<AppColors>()!.active,
                                   )
                                   .fontStyle,
                               fontSize: FontSize(16),
                               lineHeight: const LineHeight(1.5),
                             ),
                             "a": Style(
-                              color: AppTheme.colorsOf(context).colorful02,
+                              color: Theme.of(context).extension<AppColors>()!.colorful02,
                               fontStyle: AppTextStyle.bodyRegular.fontStyle,
                               fontSize: FontSize(16),
                               lineHeight: const LineHeight(1.5),
                             ),
                             "p": Style(
-                              color: AppTheme.colorsOf(context).active,
+                              color: Theme.of(context).extension<AppColors>()!.active,
                               fontStyle: AppTextStyle.bodyRegular
                                   .copyWith(
-                                    color: AppTheme.colorsOf(context).active,
+                                    color: Theme.of(context).extension<AppColors>()!.active,
                                   )
                                   .fontStyle,
                               fontSize: FontSize(16),
@@ -105,6 +102,7 @@ class NewsDetailsPage extends StatelessWidget {
                 ),
                 ImagesHorizontalSlider(images: newsItem.images),
                 const SizedBox(height: 24),
+                SizedBox(height: MediaQuery.of(context).padding.bottom),
               ],
             ),
           ),
@@ -116,7 +114,7 @@ class NewsDetailsPage extends StatelessWidget {
 
 /// Tags and date of publication of the news
 class _NewsItemInfo extends StatelessWidget {
-  const _NewsItemInfo({Key? key, required this.tags, required this.date}) : super(key: key);
+  const _NewsItemInfo({required this.tags, required this.date});
 
   final List<String> tags;
   final DateTime date;
@@ -145,7 +143,7 @@ class _NewsItemInfo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SvgPicture.asset("assets/icons/calendar.svg", height: 50),
+            Assets.icons.calendar.svg(height: 50),
             Padding(
               padding: const EdgeInsets.only(left: 8, top: 4),
               child: Column(
@@ -153,11 +151,11 @@ class _NewsItemInfo extends StatelessWidget {
                 children: [
                   Text(
                     "Дата",
-                    style: AppTextStyle.body.copyWith(color: AppTheme.colorsOf(context).deactive),
+                    style: AppTextStyle.body.copyWith(color: Theme.of(context).extension<AppColors>()!.deactive),
                   ),
                   Text(
                     DateFormat.MMMd('ru_RU').format(date).toString(),
-                    style: AppTextStyle.titleM.copyWith(color: AppTheme.colorsOf(context).colorful02),
+                    style: AppTextStyle.titleM.copyWith(color: Theme.of(context).extension<AppColors>()!.colorful02),
                   ),
                 ],
               ),

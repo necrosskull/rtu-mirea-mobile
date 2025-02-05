@@ -1,11 +1,11 @@
+import 'package:enough_platform_widgets/enough_platform_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
-import 'package:rtu_mirea_app/presentation/typography.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ServiceCard extends StatelessWidget {
   const ServiceCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
     this.onTap,
@@ -13,7 +13,7 @@ class ServiceCard extends StatelessWidget {
     this.url,
     this.description,
     this.launchMode = LaunchMode.externalApplication,
-  }) : super(key: key);
+  });
 
   final String title;
   final String? url;
@@ -28,11 +28,11 @@ class ServiceCard extends StatelessWidget {
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 156, maxHeight: 192),
       child: Card(
-        color: AppTheme.colorsOf(context).background02,
+        color: Theme.of(context).extension<AppColors>()!.background02,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        child: InkWell(
+        child: PlatformInkWell(
           onLongPress: onLongPress,
           onTap: () {
             if (onTap != null) {
@@ -56,7 +56,7 @@ class ServiceCard extends StatelessWidget {
                 Text(
                   title,
                   style: AppTextStyle.bodyBold.copyWith(
-                    color: AppTheme.colorsOf(context).active,
+                    color: Theme.of(context).extension<AppColors>()!.active,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -67,7 +67,7 @@ class ServiceCard extends StatelessWidget {
                     child: Text(
                       description!,
                       style: AppTextStyle.body.copyWith(
-                        color: AppTheme.colorsOf(context).deactive,
+                        color: Theme.of(context).extension<AppColors>()!.deactive,
                         height: 1.1,
                       ),
                       maxLines: 2,

@@ -1,13 +1,14 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rtu_mirea_app/discourse_post_overview/view/view.dart';
 import 'package:rtu_mirea_app/domain/entities/news_item.dart';
 import 'package:rtu_mirea_app/domain/entities/story.dart';
 import 'package:rtu_mirea_app/domain/entities/user.dart';
 import 'package:rtu_mirea_app/home/view/home_page.dart';
+import 'package:rtu_mirea_app/map/view/map_page_view.dart';
+import 'package:rtu_mirea_app/nfc_pass/view/nfc_pass_page_view.dart';
 import 'package:rtu_mirea_app/presentation/pages/profile/notifications_settings_page.dart';
 import 'package:rtu_mirea_app/navigation/view/scaffold_navigation_shell.dart';
 import 'package:rtu_mirea_app/presentation/pages/news/news_details_page.dart';
@@ -19,27 +20,25 @@ import 'package:rtu_mirea_app/presentation/pages/profile/profile_attendance_page
 import 'package:rtu_mirea_app/presentation/pages/profile/profile_detail_page.dart';
 import 'package:rtu_mirea_app/presentation/pages/profile/profile_lectors_page.dart';
 import 'package:rtu_mirea_app/presentation/pages/profile/profile_scores_page.dart';
-import 'package:rtu_mirea_app/presentation/pages/profile/profile_page.dart';
 import 'package:rtu_mirea_app/presentation/pages/profile/profile_settings_page.dart';
-import 'package:rtu_mirea_app/presentation/widgets/images_view_gallery.dart';
+import 'package:app_ui/app_ui.dart';
+import 'package:rtu_mirea_app/profile/profile.dart';
 import 'package:rtu_mirea_app/rating_system_calculator/models/models.dart';
 import 'package:rtu_mirea_app/rating_system_calculator/view/about_rating_system_page.dart';
 import 'package:rtu_mirea_app/rating_system_calculator/view/subject_page.dart';
 import 'package:rtu_mirea_app/schedule/view/schedule_details_page.dart';
 import 'package:rtu_mirea_app/rating_system_calculator/view/rating_system_calculator_page.dart';
 import 'package:rtu_mirea_app/schedule/view/schedule_page.dart';
+import 'package:rtu_mirea_app/schedule_management/schedule_management.dart';
 import 'package:rtu_mirea_app/search/view/search_page.dart';
 import 'package:rtu_mirea_app/services/view/view.dart';
 import 'package:rtu_mirea_app/stories/stories.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:university_app_server_api/client.dart';
-import 'package:neon_framework/src/blocs/accounts.dart';
-import 'package:neon_framework/src/utils/provider.dart';
 import 'package:neon_framework/src/router.dart' as neon;
 import 'package:url_launcher/url_launcher_string.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-
 final GlobalKey<NavigatorState> _newsNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'news');
 final GlobalKey<NavigatorState> _scheduleNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'schedule');
 final GlobalKey<NavigatorState> _servicesNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'services');
@@ -65,8 +64,7 @@ GoRouter createRouter() => GoRouter(
       debugLogDiagnostics: kDebugMode,
       redirect: (context, state) {
         if (state.matchedLocation.contains('neon')) {
-          final accountsBloc = NeonProvider.of<AccountsBloc>(context);
-          final redirectPath = neon.redirect(accountsBloc, context, state);
+          final redirectPath = neon.redirect(context, state);
 
           if (redirectPath != null) {
             final pathInCurrentRouter = _getNeonPathInCurrentRouter(redirectPath);
@@ -144,6 +142,11 @@ GoRouter createRouter() => GoRouter(
                   path: '/services',
                   builder: (context, state) => const ServicesPage(),
                   routes: [
+                    GoRoute(path: 'nfc', builder: (context, state) => const NfcPassPageView()),
+                    GoRoute(
+                      path: 'map',
+                      builder: (context, state) => const MapPageView(),
+                    ),
                     GoRoute(
                       path: 'discourse-post-overview/:postId',
                       builder: (context, state) {
@@ -169,17 +172,34 @@ GoRouter createRouter() => GoRouter(
                     ),
                     ...neon.$appRoutes.map((route) {
                       if (route is GoRoute) {
-                        route = GoRoute(
+                        return GoRoute(
                           path: _getNeonPathInCurrentRouter(route.path),
                           name: route.name,
-                          builder: route.builder,
+                          builder: route.builder != null
+                              ? (context, state) {
+                                  final theme = Theme.of(context).copyWith(
+                                    listTileTheme: ListTileThemeData(
+                                      tileColor: Colors.transparent,
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                                      leadingAndTrailingTextStyle: AppTextStyle.chip.copyWith(
+                                        color: Theme.of(context).extension<AppColors>()!.active,
+                                      ),
+                                      titleTextStyle: AppTextStyle.titleM.copyWith(
+                                        color: Theme.of(context).extension<AppColors>()!.active,
+                                      ),
+                                      subtitleTextStyle: AppTextStyle.chip.copyWith(
+                                        color: Theme.of(context).extension<AppColors>()!.deactive,
+                                      ),
+                                    ),
+                                  );
+                                  return Theme(data: theme, child: route.builder!(context, state));
+                                }
+                              : null,
                           redirect: route.redirect,
                           routes: route.routes,
                           pageBuilder: route.pageBuilder,
                           parentNavigatorKey: route.parentNavigatorKey,
                         );
-
-                        return route;
                       }
 
                       return route;
@@ -193,6 +213,10 @@ GoRouter createRouter() => GoRouter(
                 path: '/profile',
                 builder: (context, state) => const ProfilePage(),
                 routes: [
+                  GoRoute(
+                    path: 'schedule-management',
+                    builder: (context, state) => const ScheduleManagementPage(),
+                  ),
                   GoRoute(
                     path: 'about',
                     builder: (context, state) => const AboutAppPage(),
@@ -243,7 +267,6 @@ GoRouter createRouter() => GoRouter(
         ),
         GoRoute(
           path: '/story/:index',
-          parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) => CustomTransitionPage(
             fullscreenDialog: true,
             opaque: false,
@@ -261,12 +284,14 @@ GoRouter createRouter() => GoRouter(
           },
         ),
         GoRoute(
-            parentNavigatorKey: _rootNavigatorKey,
-            path: '/onboarding',
-            builder: (context, state) => const OnBoardingPage()),
-        GoRoute(parentNavigatorKey: _rootNavigatorKey, path: '/home', builder: (context, state) => const HomePage()),
+          path: '/onboarding',
+          builder: (context, state) => const OnBoardingPage(),
+        ),
         GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
+          path: '/home',
+          builder: (context, state) => const HomePage(),
+        ),
+        GoRoute(
           path: '/image',
           pageBuilder: (context, state) => CustomTransitionPage(
             fullscreenDialog: true,

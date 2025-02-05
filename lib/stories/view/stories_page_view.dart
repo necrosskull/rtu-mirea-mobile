@@ -6,19 +6,17 @@ import 'package:rtu_mirea_app/analytics/bloc/analytics_bloc.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:dismissible_page/dismissible_page.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rtu_mirea_app/common/utils/utils.dart';
 import 'package:rtu_mirea_app/domain/entities/story.dart';
-import 'package:rtu_mirea_app/presentation/widgets/buttons/primary_button.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:story/story.dart';
-import 'package:rtu_mirea_app/presentation/typography.dart';
 
 class StoriesPageView extends StatefulWidget {
   const StoriesPageView({
-    Key? key,
+    super.key,
     required this.stories,
     required this.storyIndex,
-  }) : super(key: key);
+  });
 
   final List<Story> stories;
   final int storyIndex;
@@ -30,52 +28,78 @@ class StoriesPageView extends StatefulWidget {
 class _StoriesPageViewState extends State<StoriesPageView> {
   int _prevStoryIndex = -1;
 
+  late int _currentPageIndex;
+  late int _currentStoryIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPageIndex = widget.storyIndex;
+    _currentStoryIndex = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DismissiblePage(
-      onDismissed: () => context.pop(),
-      isFullScreen: false,
+      onDismissed: () => Navigator.of(context).pop(),
+      isFullScreen: true,
       direction: DismissiblePageDismissDirection.vertical,
       backgroundColor: Colors.black.withOpacity(0.8),
-      child: Center(
-        child: AspectRatio(
-          aspectRatio: 9 / 16,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Material(
-              color: Colors.transparent,
-              child: Hero(
-                tag: widget.stories[widget.storyIndex].title,
-                child: StoryPageView(
-                  indicatorDuration: const Duration(seconds: 6, milliseconds: 500),
-                  initialPage: widget.storyIndex,
-                  itemBuilder: (context, pageIndex, storyIndex) {
-                    if (pageIndex != _prevStoryIndex) {
-                      _prevStoryIndex = pageIndex;
-                      context.read<AnalyticsBloc>().add(
-                            TrackAnalyticsEvent(
-                              ViewStory(
-                                storyTitle: widget.stories[pageIndex].title,
-                              ),
-                            ),
-                          );
-                    }
-                    final author = widget.stories[pageIndex].author;
-                    final page = widget.stories[pageIndex].pages[storyIndex];
-                    return _buildStoryPage(author, page);
-                  },
-                  gestureItemBuilder: (context, pageIndex, storyIndex) {
-                    return _buildGestureItems(pageIndex, storyIndex);
-                  },
-                  pageLength: widget.stories.length,
-                  storyLength: (int pageIndex) {
-                    return widget.stories[pageIndex].pages.length;
-                  },
-                  onPageLimitReached: () => context.pop(),
+      child: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Hero(
+                    tag: widget.stories[widget.storyIndex].title,
+                    child: StoryPageView(
+                      showShadow: true,
+                      indicatorDuration: const Duration(seconds: 6, milliseconds: 500),
+                      initialPage: widget.storyIndex,
+                      itemBuilder: (context, pageIndex, storyIndex) {
+                        if (pageIndex != _prevStoryIndex) {
+                          _prevStoryIndex = pageIndex;
+                          context.read<AnalyticsBloc>().add(
+                                TrackAnalyticsEvent(
+                                  ViewStory(
+                                    storyTitle: widget.stories[pageIndex].title,
+                                  ),
+                                ),
+                              );
+                        }
+
+                        if (_currentPageIndex != pageIndex || _currentStoryIndex != storyIndex) {
+                          setState(() {
+                            _currentPageIndex = pageIndex;
+                            _currentStoryIndex = storyIndex;
+                          });
+                        }
+
+                        final author = widget.stories[pageIndex].author;
+                        final page = widget.stories[pageIndex].pages[storyIndex];
+                        return _buildStoryPage(author, page);
+                      },
+                      pageLength: widget.stories.length,
+                      storyLength: (int pageIndex) {
+                        return widget.stories[pageIndex].pages.length;
+                      },
+                      onPageLimitReached: () => Navigator.of(context).pop(),
+                      gestureItemBuilder: (context, pageIndex, storyIndex) {
+                        return _buildGestureItems(pageIndex, storyIndex);
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: _buildActionButtons(),
+            ),
+          ],
         ),
       ),
     );
@@ -84,8 +108,7 @@ class _StoriesPageViewState extends State<StoriesPageView> {
   Widget _buildStoryPage(Author author, StoryPage page) {
     return Stack(
       children: [
-        AspectRatio(
-          aspectRatio: 9 / 16,
+        Positioned.fill(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: page.media.formats != null
@@ -101,8 +124,20 @@ class _StoriesPageViewState extends State<StoriesPageView> {
                   ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 44, left: 8),
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 42,
+          left: 16,
           child: Row(
             children: [
               Container(
@@ -111,118 +146,98 @@ class _StoriesPageViewState extends State<StoriesPageView> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: author.logo.formats != null
-                        ? NetworkImage(author.logo.formats!.small != null
-                            ? author.logo.formats!.small!.url
-                            : author.logo.formats!.thumbnail.url)
+                        ? NetworkImage(
+                            author.logo.formats!.small?.url ?? author.logo.formats!.thumbnail.url,
+                          )
                         : NetworkImage(author.logo.url),
                     fit: BoxFit.cover,
                   ),
                   shape: BoxShape.circle,
                 ),
               ),
-              const SizedBox(
-                width: 8,
-              ),
-              Material(
-                type: MaterialType.transparency,
-                child: Text(
-                  author.name,
-                  style: AppTextStyle.bodyBold,
-                ),
+              const SizedBox(width: 8),
+              Text(
+                author.name,
+                style: AppTextStyle.bodyBold.copyWith(color: Colors.white),
               ),
             ],
           ),
         ),
         Positioned(
-          top: 105,
+          bottom: 80,
           left: 24,
           right: 24,
-          child: Material(
-            type: MaterialType.transparency,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (page.title != null)
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            page.title!,
-                            style: AppTextStyle.h4,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(height: 16)
-                      ],
-                    ),
-                  ),
-                if (page.text != null)
-                  Text(
-                    page.text!,
-                    style: AppTextStyle.bodyBold,
-                  )
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (page.title != null)
+                Text(
+                  page.title!,
+                  style: AppTextStyle.h4.copyWith(color: Colors.white),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              if (page.text != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  page.text!,
+                  style: AppTextStyle.bodyBold.copyWith(color: Colors.white),
+                ),
               ],
-            ),
+            ],
           ),
         ),
       ],
     );
   }
 
-  Widget _buildGestureItems(int pageIndex, int storyIndex) {
-    final height =
-        MediaQuery.of(context).size.height - MediaQuery.of(context).padding.bottom - MediaQuery.of(context).padding.top;
-    final contentHeigth = height * (9 / 16);
-    final buttonSpaceHeight = (height - contentHeigth) / 2;
+  Widget _buildActionButtons() {
+    final pageIndex = _currentPageIndex;
+    final storyIndex = _currentStoryIndex;
+
+    if (pageIndex < 0 ||
+        pageIndex >= widget.stories.length ||
+        storyIndex < 0 ||
+        storyIndex >= widget.stories[pageIndex].pages.length) {
+      return const SizedBox.shrink();
+    }
+
+    final actions = widget.stories[pageIndex].pages[storyIndex].actions;
 
     return Column(
-      children: [
-        Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 42),
-            child: Material(
-              color: Colors.transparent,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                color: Colors.white,
-                icon: const Icon(Icons.close),
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                ),
-                onPressed: () => context.pop(),
-              ),
-            ),
+      mainAxisSize: MainAxisSize.min,
+      children: actions.map((action) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: PrimaryButton(
+            text: action.title,
+            onClick: () {
+              launchUrlString(
+                action.url,
+                mode: LaunchMode.externalApplication,
+              );
+            },
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildGestureItems(int pageIndex, int storyIndex) {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 32, right: 16),
+        child: Material(
+          color: Colors.transparent,
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            color: Colors.white,
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        SizedBox(height: contentHeigth),
-        Padding(
-          padding: EdgeInsets.only(left: 24, right: 24, top: buttonSpaceHeight),
-          child: Column(
-            children: List.generate(
-              widget.stories[pageIndex].pages[storyIndex].actions.length,
-              (index) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: PrimaryButton(
-                  text: widget.stories[pageIndex].pages[storyIndex].actions[index].title,
-                  onClick: () {
-                    launchUrlString(
-                      widget.stories[pageIndex].pages[storyIndex].actions[index].url,
-                      mode: LaunchMode.externalApplication,
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

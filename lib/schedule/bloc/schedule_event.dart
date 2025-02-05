@@ -9,7 +9,7 @@ class SetLessonComment extends ScheduleEvent with AnalyticsEventMixin {
     required this.comment,
   });
 
-  final ScheduleComment comment;
+  final LessonComment comment;
 
   @override
   AnalyticsEvent get event => const AnalyticsEvent('SetLessonComment');
@@ -105,8 +105,8 @@ class ScheduleSetEmptyLessonsDisplaying extends ScheduleEvent {
   List<Object> get props => [showEmptyLessons];
 }
 
-class ScheduleSetShowCommentsIndicator extends ScheduleEvent {
-  const ScheduleSetShowCommentsIndicator({
+class SetShowCommentsIndicator extends ScheduleEvent {
+  const SetShowCommentsIndicator({
     required this.showCommentsIndicators,
   });
 
@@ -161,4 +161,85 @@ class DeleteSchedule extends ScheduleEvent {
 
   @override
   List<Object> get props => [identifier, target];
+}
+
+class ToggleListMode extends ScheduleEvent {
+  const ToggleListMode();
+
+  @override
+  List<Object> get props => [];
+}
+
+class SetScheduleComment extends ScheduleEvent {
+  final ScheduleComment comment;
+
+  const SetScheduleComment(this.comment);
+
+  @override
+  List<Object?> get props => [comment];
+}
+
+class RemoveScheduleComment extends ScheduleEvent {
+  final String scheduleName;
+
+  const RemoveScheduleComment(this.scheduleName);
+
+  @override
+  List<Object?> get props => [scheduleName];
+}
+
+class DeleteScheduleComment extends ScheduleEvent {
+  final String scheduleName;
+
+  const DeleteScheduleComment(this.scheduleName);
+
+  @override
+  List<Object?> get props => [scheduleName];
+}
+
+class ImportScheduleFromJson extends ScheduleEvent {
+  final String jsonString;
+
+  const ImportScheduleFromJson(this.jsonString);
+
+  @override
+  List<Object> get props => [jsonString];
+}
+
+class AddScheduleToComparison extends ScheduleEvent with AnalyticsEventMixin {
+  const AddScheduleToComparison(this.schedule);
+
+  final SelectedSchedule schedule;
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('AddScheduleToComparison');
+
+  @override
+  List<Object> get props => [schedule];
+}
+
+class RemoveScheduleFromComparison extends ScheduleEvent with AnalyticsEventMixin {
+  const RemoveScheduleFromComparison(this.schedule);
+
+  final SelectedSchedule schedule;
+
+  @override
+  AnalyticsEvent get event => const AnalyticsEvent('RemoveScheduleFromComparison');
+
+  @override
+  List<Object> get props => [schedule];
+}
+
+class ToggleComparisonMode extends ScheduleEvent {
+  const ToggleComparisonMode();
+
+  @override
+  List<Object> get props => [];
+}
+
+class HideScheduleDiffDialog extends ScheduleEvent {
+  const HideScheduleDiffDialog();
+
+  @override
+  List<Object> get props => [];
 }

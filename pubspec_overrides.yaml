@@ -1,49 +1,35 @@
-# melos_managed_dependency_overrides: dynamite_runtime,neon_framework,neon_lints,nextcloud,sort_box
 dependency_overrides:
-  dynamite_runtime:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/dynamite/dynamite_runtime
-  file_icons:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/file_icons
-  neon_dashboard:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/neon/neon_dashboard
-  neon_files:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/neon/neon_files
+  intl: ^0.19.0
   neon_framework:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/neon_framework
-  neon_lints:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/neon_lints
-  neon_news:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/neon/neon_news
-  neon_notes:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/neon/neon_notes
-  neon_notifications:
-    git:
-      url: https://github.com/0niel/neon.git
-      path: packages/neon/neon_notifications
+    path: packages/neon/packages/neon_framework
+  files_app:
+    path: packages/neon/packages/neon_framework/packages/files_app
+  neon_http_client:
+    path: packages/neon/packages/neon_framework/packages/neon_http_client
+  account_repository:
+    path: packages/neon/packages/neon_framework/packages/account_repository
+  timezone: ^0.10.0
+  flutter_sticky_header: ^0.7.0
+  value_layout_builder: ^0.4.0
   nextcloud:
     git:
-      url: https://github.com/0niel/neon.git
+      url: https://github.com/nextcloud/neon
+      ref: c4be1b2
       path: packages/nextcloud
-  sort_box:
+  bloc_concurrency: ^0.3.0
+  hydrated_bloc:
     git:
-      url: https://github.com/0niel/neon.git
-      path: packages/sort_box
+      url: https://github.com/0niel/bloc
+      path: packages/hydrated_bloc
+      ref: master
+  bloc:
+    git:
+      url: https://github.com/0niel/bloc
+      path: packages/bloc
+      ref: master
+  flutter_bloc:
+    git:
+      url: https://github.com/0niel/bloc
+      path: packages/flutter_bloc
+      ref: master
 
-  
-  vm_service: 13.0.0

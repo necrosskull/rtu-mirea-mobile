@@ -1,11 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:rtu_mirea_app/presentation/typography.dart';
+import 'package:app_ui/app_ui.dart';
 
 class MemberInfo extends StatelessWidget {
-  const MemberInfo({Key? key, required this.username, required this.avatarUrl, required this.profileUrl})
-      : super(key: key);
+  const MemberInfo({super.key, required this.username, required this.avatarUrl, required this.profileUrl});
   final String username;
   final String avatarUrl;
   final String profileUrl;

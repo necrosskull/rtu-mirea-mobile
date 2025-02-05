@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:neon_framework/theme.dart';
-import 'package:rtu_mirea_app/presentation/theme.dart';
+import 'package:app_ui/app_ui.dart';
 import 'package:vector_graphics/vector_graphics.dart';
 import 'dart:developer';
 import 'package:flutter/painting.dart' as painting;
@@ -16,12 +16,14 @@ final neonTheme = NeonTheme(
 
 /// The custom branding used in the Neon app.
 final branding = Branding(
+  // baseUrl: Uri.parse('https://cloud.mirea.ninja'),
+  // useAdaptiveTheme: false,
   name: 'Cloud Mirea Ninja',
   logo: VectorGraphic(
     width: 100,
     height: 100,
     colorFilter: ColorFilter.mode(
-      AppTheme.colors.primary,
+      AppColors.dark.primary,
       painting.BlendMode.srcIn,
     ),
     loader: const NetworkSvgLoader(
@@ -36,7 +38,7 @@ final branding = Branding(
 
 /// The custom color scheme used in the Neon app.
 final colorScheme = NeonColorScheme(
-  primary: AppTheme.colors.primary,
+  primary: AppColors.dark.primary,
 );
 
 class NetworkSvgLoader extends BytesLoader {
